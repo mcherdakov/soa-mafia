@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option go_package = "proto/";
+
+service SOAMafia {
+    rpc ConnectQueue(ConnectQueueIn) returns (stream Notifications);
+    rpc DisconnectQueue(DisconnectQueueIn) returns (DisconnectQueueOut);
+}
+
+message ConnectQueueIn {
+    string username = 1;
+}
+
+message DisconnectQueueIn {
+    string username = 1;
+}
+
+message DisconnectQueueOut {
+    bool ok = 1;
+}
+
+message Notifications {
+    oneof notification {
+        UserConnectedNotification user_connected = 1; 
+        UserDisconnectedNotification user_disconnected = 2; 
+        EnterSessionNotification enter_session = 3;
+    }
+}
+
+message UserConnectedNotification {
+    string username = 1;
+    repeated string current = 2;
+}
+
+message UserDisconnectedNotification {
+    string username = 1;
+    repeated string current = 2;
+}
+
+message EnterSessionNotification {
+    int64 session_id = 1;
+}
