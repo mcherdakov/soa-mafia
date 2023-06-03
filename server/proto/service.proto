@@ -5,18 +5,36 @@ option go_package = "proto/";
 service SOAMafia {
     rpc ConnectQueue(ConnectQueueIn) returns (stream Notifications);
     rpc DisconnectQueue(DisconnectQueueIn) returns (DisconnectQueueOut);
+    rpc SendCommand(SendCommandIn) returns (SendCommandOut);
 }
 
-message ConnectQueueIn {
+enum Role {
+    CIVILIAN = 0;
+    MAFIA = 1;
+    DETECITVE = 2;
+}
+
+message Commands {
+    oneof command {
+        PassCommand pass_command = 1;
+        VoteCommand vote_command = 2;
+        KillCommand kill_command = 3;
+        CheckCommand check_command = 4;
+    }
+}
+
+message PassCommand {}
+
+message VoteCommand {
     string username = 1;
 }
 
-message DisconnectQueueIn {
+message KillCommand {
     string username = 1;
 }
 
-message DisconnectQueueOut {
-    bool ok = 1;
+message CheckCommand {
+    string username = 1;
 }
 
 message Notifications {
@@ -24,6 +42,9 @@ message Notifications {
         UserConnectedNotification user_connected = 1; 
         UserDisconnectedNotification user_disconnected = 2; 
         EnterSessionNotification enter_session = 3;
+        RoundStartNotification round_start = 4;
+        NightTimeNotification night_time = 5;
+        ResultNotification result_notification = 6;
     }
 }
 
@@ -39,4 +60,40 @@ message UserDisconnectedNotification {
 
 message EnterSessionNotification {
     int64 session_id = 1;
+    Role role = 2;
+}
+
+message RoundStartNotification {
+    int64 day = 1;
+    optional string killed_username = 2;
+    optional string mafia_username = 3;
+    repeated string remaining = 4;
+}
+
+message NightTimeNotification {}
+
+message ResultNotification {
+    Role winner = 1;
+}
+
+message ConnectQueueIn {
+    string username = 1;
+}
+
+message DisconnectQueueIn {
+    string username = 1;
+}
+
+message DisconnectQueueOut {
+    bool ok = 1;
+}
+
+message SendCommandIn {
+    Commands command = 1;
+    int64 session_id = 2;
+    string username = 3;
+}
+
+message SendCommandOut {
+    bool ok = 1;
 }

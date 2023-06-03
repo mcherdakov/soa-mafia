@@ -24,11 +24,15 @@ const (
 	stateConnectedToSession
 )
 
+type sessionInfo struct {
+	sessionID int64
+	role      proto.Role
+}
+
 type command string
 
 const (
 	commandConnect = "connect"
-	commandJoin    = "join"
 )
 
 type CLI struct {
@@ -40,7 +44,7 @@ type CLI struct {
 
 	username           string
 	notificationStream proto.SOAMafia_ConnectQueueClient
-	enterSession       chan int64
+	enterSession       chan sessionInfo
 }
 
 func NewCLI(client proto.SOAMafiaClient) *CLI {
@@ -48,7 +52,7 @@ func NewCLI(client proto.SOAMafiaClient) *CLI {
 		client:       client,
 		reader:       bufio.NewReader(os.Stdin),
 		userState:    stateNew,
-		enterSession: make(chan int64),
+		enterSession: make(chan sessionInfo),
 	}
 }
 
@@ -115,7 +119,10 @@ func (c *CLI) handleNotifications() {
 			c.printCurrentUsers(disconnected.Current)
 		case *proto.Notifications_EnterSession:
 			enterSession := msg.GetEnterSession()
-			c.enterSession <- enterSession.SessionId
+			c.enterSession <- sessionInfo{
+				sessionID: enterSession.SessionId,
+				role:      enterSession.Role,
+			}
 		}
 	}
 }
@@ -154,8 +161,12 @@ func (c *CLI) handleStateNotConnectedToQueue(ctx context.Context) {
 func (c *CLI) handleStateConnectedToQueue(ctx context.Context) {
 	fmt.Println("waiting for more people to join queue...")
 
-	sessionID := <-c.enterSession
-	fmt.Printf("Session %d is ready to start. Type %q to join it\n", sessionID, commandJoin)
+	session := <-c.enterSession
+	fmt.Printf(
+		"You are connected to session %d. Your role is %s\n",
+		session.sessionID,
+		roleName(session.role),
+	)
 
 	for {
 	}
@@ -181,4 +192,17 @@ func (c *CLI) printCurrentUsers(users []string) {
 	}
 
 	fmt.Printf("Users in the queue: %s\n", strings.Join(users, ", "))
+}
+
+func roleName(r proto.Role) string {
+	switch r {
+	case proto.Role_CIVILIAN:
+		return "civilian"
+	case proto.Role_DETECITVE:
+		return "detective"
+	case proto.Role_MAFIA:
+		return "mafia"
+	default:
+		return "unknown role"
+	}
 }

@@ -5,6 +5,7 @@ import "github.com/mcherdakov/soa-mafia/server/internal/models"
 type SessionManager struct {
 	input        chan []*models.User
 	maxSessionID int64
+	sessions     map[int64]*Session
 }
 
 func NewSessionManager() *SessionManager {
@@ -20,7 +21,15 @@ func (sm *SessionManager) Chan() chan []*models.User {
 
 func (sm *SessionManager) Run() {
 	for users := range sm.input {
-		go NewSession(users, sm.maxSessionID+1).Run()
+		sessionID := sm.maxSessionID + 1
+
+		session := NewSession(users, sm.maxSessionID+1)
+		sm.sessions[sessionID] = session
+
 		sm.maxSessionID += 1
 	}
+}
+
+func (sm *SessionManager) SessionByID(sessionID int64) *Session {
+	return sm.sessions[sessionID]
 }

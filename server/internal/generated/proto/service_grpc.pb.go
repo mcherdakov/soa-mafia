@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type SOAMafiaClient interface {
 	ConnectQueue(ctx context.Context, in *ConnectQueueIn, opts ...grpc.CallOption) (SOAMafia_ConnectQueueClient, error)
 	DisconnectQueue(ctx context.Context, in *DisconnectQueueIn, opts ...grpc.CallOption) (*DisconnectQueueOut, error)
+	SendCommand(ctx context.Context, in *SendCommandIn, opts ...grpc.CallOption) (*SendCommandOut, error)
 }
 
 type sOAMafiaClient struct {
@@ -75,12 +76,22 @@ func (c *sOAMafiaClient) DisconnectQueue(ctx context.Context, in *DisconnectQueu
 	return out, nil
 }
 
+func (c *sOAMafiaClient) SendCommand(ctx context.Context, in *SendCommandIn, opts ...grpc.CallOption) (*SendCommandOut, error) {
+	out := new(SendCommandOut)
+	err := c.cc.Invoke(ctx, "/SOAMafia/SendCommand", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SOAMafiaServer is the server API for SOAMafia service.
 // All implementations must embed UnimplementedSOAMafiaServer
 // for forward compatibility
 type SOAMafiaServer interface {
 	ConnectQueue(*ConnectQueueIn, SOAMafia_ConnectQueueServer) error
 	DisconnectQueue(context.Context, *DisconnectQueueIn) (*DisconnectQueueOut, error)
+	SendCommand(context.Context, *SendCommandIn) (*SendCommandOut, error)
 	mustEmbedUnimplementedSOAMafiaServer()
 }
 
@@ -93,6 +104,9 @@ func (UnimplementedSOAMafiaServer) ConnectQueue(*ConnectQueueIn, SOAMafia_Connec
 }
 func (UnimplementedSOAMafiaServer) DisconnectQueue(context.Context, *DisconnectQueueIn) (*DisconnectQueueOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisconnectQueue not implemented")
+}
+func (UnimplementedSOAMafiaServer) SendCommand(context.Context, *SendCommandIn) (*SendCommandOut, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendCommand not implemented")
 }
 func (UnimplementedSOAMafiaServer) mustEmbedUnimplementedSOAMafiaServer() {}
 
@@ -146,6 +160,24 @@ func _SOAMafia_DisconnectQueue_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SOAMafia_SendCommand_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendCommandIn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SOAMafiaServer).SendCommand(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/SOAMafia/SendCommand",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SOAMafiaServer).SendCommand(ctx, req.(*SendCommandIn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SOAMafia_ServiceDesc is the grpc.ServiceDesc for SOAMafia service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -156,6 +188,10 @@ var SOAMafia_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DisconnectQueue",
 			Handler:    _SOAMafia_DisconnectQueue_Handler,
+		},
+		{
+			MethodName: "SendCommand",
+			Handler:    _SOAMafia_SendCommand_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

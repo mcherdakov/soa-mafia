@@ -24,7 +24,10 @@ func run() error {
 	s := grpc.NewServer()
 	proto.RegisterSOAMafiaServer(
 		s,
-		rpc.NewSOAMafiaServer(queue.NewQueue(sessionManager.Chan())),
+		rpc.NewSOAMafiaServer(
+			queue.NewQueue(sessionManager.Chan()),
+			sessionManager,
+		),
 	)
 
 	return s.Serve(listener)

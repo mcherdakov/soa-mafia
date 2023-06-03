@@ -2,22 +2,26 @@ package rpc
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/mcherdakov/soa-mafia/server/internal/generated/proto"
 	"github.com/mcherdakov/soa-mafia/server/internal/models"
 	"github.com/mcherdakov/soa-mafia/server/internal/queue"
+	"github.com/mcherdakov/soa-mafia/server/internal/session"
 )
 
 type SOAMafiaServer struct {
 	proto.UnimplementedSOAMafiaServer
 
-	queue *queue.Queue
+	queue          *queue.Queue
+	sessionManager *session.SessionManager
 }
 
-func NewSOAMafiaServer(q *queue.Queue) *SOAMafiaServer {
+func NewSOAMafiaServer(q *queue.Queue, sm *session.SessionManager) *SOAMafiaServer {
 	return &SOAMafiaServer{
-		queue: q,
+		queue:          q,
+		sessionManager: sm,
 	}
 }
 
@@ -42,4 +46,13 @@ func (s *SOAMafiaServer) DisconnectQueue(ctx context.Context, in *proto.Disconne
 	s.queue.DisconnectFromQueue(in.Username)
 
 	return &proto.DisconnectQueueOut{Ok: true}, nil
+}
+
+func (s *SOAMafiaServer) SendCommand(ctx context.Context, in *proto.SendCommandIn) (*proto.SendCommandOut, error) {
+	session := s.sessionManager.SessionByID(in.SessionId)
+	if session == nil {
+		return nil, fmt.Errorf("invalid session id")
+	}
+
+	return &proto.SendCommandOut{Ok: true}, nil
 }

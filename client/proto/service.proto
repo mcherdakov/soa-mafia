@@ -37,6 +37,13 @@ message UserDisconnectedNotification {
     repeated string current = 2;
 }
 
+enum Role {
+    CIVILIAN = 0;
+    MAFIA = 1;
+    DETECITVE = 2;
+}
+
 message EnterSessionNotification {
     int64 session_id = 1;
+    Role role = 2;
 }
