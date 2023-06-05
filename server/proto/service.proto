@@ -70,7 +70,10 @@ message RoundStartNotification {
     repeated string remaining = 4;
 }
 
-message NightTimeNotification {}
+message NightTimeNotification {
+    optional string voted_out = 1;
+    repeated string remaining = 2;
+}
 
 message ResultNotification {
     Role winner = 1;

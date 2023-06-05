@@ -12,7 +12,7 @@ import (
 
 func run() error {
 	conn, err := grpc.Dial(
-		"localhost:9000",
+		"server:9000",
 		grpc.WithTransportCredentials(
 			insecure.NewCredentials(),
 		),

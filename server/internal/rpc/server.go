@@ -49,9 +49,15 @@ func (s *SOAMafiaServer) DisconnectQueue(ctx context.Context, in *proto.Disconne
 }
 
 func (s *SOAMafiaServer) SendCommand(ctx context.Context, in *proto.SendCommandIn) (*proto.SendCommandOut, error) {
-	session := s.sessionManager.SessionByID(in.SessionId)
-	if session == nil {
+	curSession := s.sessionManager.SessionByID(in.SessionId)
+	if curSession == nil {
 		return nil, fmt.Errorf("invalid session id")
+	}
+
+	c := curSession.CmdChan()
+	c <- session.Command{
+		Cmd:      in.Command,
+		Username: in.Username,
 	}
 
 	return &proto.SendCommandOut{Ok: true}, nil

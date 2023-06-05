@@ -5,12 +5,20 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/mcherdakov/soa-mafia/client/internal/generated/proto"
+)
+
+type mode int
+
+const (
+	modeManual mode = iota
+	modeAuto
 )
 
 type state int
@@ -22,6 +30,7 @@ const (
 
 	stateWaitingSessionAck
 	stateConnectedToSession
+	stateDead
 )
 
 type sessionInfo struct {
@@ -45,6 +54,7 @@ type CLI struct {
 	username           string
 	notificationStream proto.SOAMafia_ConnectQueueClient
 	enterSession       chan sessionInfo
+	day                int64
 }
 
 func NewCLI(client proto.SOAMafiaClient) *CLI {
@@ -123,6 +133,8 @@ func (c *CLI) handleNotifications() {
 				sessionID: enterSession.SessionId,
 				role:      enterSession.Role,
 			}
+
+			return
 		}
 	}
 }
@@ -136,13 +148,6 @@ func (c *CLI) handleStateNew() {
 }
 
 func (c *CLI) handleStateNotConnectedToQueue(ctx context.Context) {
-	fmt.Printf("You can connect to queue by typing %q\n", commandConnect)
-
-	if c.input() != commandConnect {
-		c.invalidCommand()
-		return
-	}
-
 	stream, err := c.client.ConnectQueue(ctx, &proto.ConnectQueueIn{
 		Username: c.username,
 	})
@@ -162,14 +167,266 @@ func (c *CLI) handleStateConnectedToQueue(ctx context.Context) {
 	fmt.Println("waiting for more people to join queue...")
 
 	session := <-c.enterSession
+	if err := c.runSession(ctx, session); err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func (c *CLI) runSession(ctx context.Context, info sessionInfo) error {
 	fmt.Printf(
-		"You are connected to session %d. Your role is %s\n",
-		session.sessionID,
-		roleName(session.role),
+		"You are connected to session %d. Your role is %s\nEnter mode: manual/auto, default - manual\n",
+		info.sessionID,
+		roleName(info.role),
 	)
 
-	for {
+	var m mode
+	switch c.input() {
+	case "manual":
+		m = modeManual
+	case "auto":
+		m = modeAuto
 	}
+
+	for {
+		if err := c.handleDay(ctx, info, m); err != nil {
+			return err
+		}
+
+		if err := c.handleNight(ctx, info, m); err != nil {
+			return err
+		}
+	}
+}
+
+func (c *CLI) handleNight(ctx context.Context, info sessionInfo, m mode) error {
+	nt, err := c.awaitNightTime()
+	if err != nil {
+		return err
+	}
+
+	if nt.VotedOut != nil {
+		fmt.Printf("%s was voted out.\n", *nt.VotedOut)
+
+		if *nt.VotedOut == c.username {
+			c.userState = stateDead
+		}
+	}
+
+	fmt.Println("Night falls.")
+
+	if c.day == 1 {
+		fmt.Println("Night 1, no action today. Enter any text to proceed")
+		c.inputAnyting(m)
+
+		_, err = c.client.SendCommand(ctx, &proto.SendCommandIn{
+			SessionId: info.sessionID,
+			Username:  c.username,
+			Command: &proto.Commands{
+				Command: &proto.Commands_PassCommand{
+					PassCommand: &proto.PassCommand{},
+				},
+			},
+		})
+
+		return err
+	}
+
+	availableUsers := strings.Join(nt.Remaining, ", ")
+
+	switch info.role {
+	case proto.Role_CIVILIAN:
+		return nil
+	case proto.Role_MAFIA:
+		if c.userState == stateDead {
+			return nil
+		}
+
+		fmt.Printf("Pick your victim: %s\n", availableUsers)
+		victim := c.getUsername(nt.Remaining, m)
+
+		_, err := c.client.SendCommand(ctx, &proto.SendCommandIn{
+			SessionId: info.sessionID,
+			Username:  c.username,
+			Command: &proto.Commands{
+				Command: &proto.Commands_KillCommand{
+					KillCommand: &proto.KillCommand{
+						Username: victim,
+					},
+				},
+			},
+		})
+
+		return err
+	case proto.Role_DETECITVE:
+		if c.userState == stateDead {
+			return nil
+		}
+
+		fmt.Printf("Pick your suspect: %s\n", availableUsers)
+		suspect := c.getUsername(nt.Remaining, m)
+
+		_, err := c.client.SendCommand(ctx, &proto.SendCommandIn{
+			SessionId: info.sessionID,
+			Username:  c.username,
+			Command: &proto.Commands{
+				Command: &proto.Commands_CheckCommand{
+					CheckCommand: &proto.CheckCommand{
+						Username: suspect,
+					},
+				},
+			},
+		})
+
+		return err
+	}
+
+	return nil
+}
+
+func (c *CLI) handleDay(ctx context.Context, info sessionInfo, m mode) error {
+	rs, err := c.awaitRoundStart()
+	if err != nil {
+		return err
+	}
+
+	c.day = rs.Day
+
+	if rs.Day == 1 {
+		fmt.Println("Day 1, no vote today. Enter any text to proceed")
+		c.inputAnyting(m)
+
+		_, err = c.client.SendCommand(ctx, &proto.SendCommandIn{
+			SessionId: info.sessionID,
+			Username:  c.username,
+			Command: &proto.Commands{
+				Command: &proto.Commands_PassCommand{
+					PassCommand: &proto.PassCommand{},
+				},
+			},
+		})
+
+		return err
+	}
+
+	if rs.KilledUsername != nil {
+		fmt.Printf("%s was killed last night\n", *rs.KilledUsername)
+		if c.username == *rs.KilledUsername {
+			c.userState = stateDead
+		}
+	}
+	if rs.MafiaUsername != nil {
+		fmt.Printf("Detective found out that %s is mafia\n", *rs.MafiaUsername)
+	}
+	fmt.Printf(
+		"Day %d. Discuss and enter username to vote, remaining: %s\n",
+		rs.Day,
+		strings.Join(rs.Remaining, ", "),
+	)
+
+	if c.userState == stateDead {
+		return nil
+	}
+
+	vote := c.getUsername(rs.Remaining, m)
+	_, err = c.client.SendCommand(ctx, &proto.SendCommandIn{
+		SessionId: info.sessionID,
+		Username:  c.username,
+		Command: &proto.Commands{
+			Command: &proto.Commands_VoteCommand{
+				VoteCommand: &proto.VoteCommand{
+					Username: vote,
+				},
+			},
+		},
+	})
+
+	return err
+}
+
+func (c *CLI) inputAnyting(m mode) {
+	defer func() {
+		fmt.Println("Waiting for other players")
+	}()
+
+	if m == modeAuto {
+		return
+	}
+
+	c.input()
+}
+
+func (c *CLI) getUsername(whiteList []string, m mode) string {
+	defer func() {
+		fmt.Println("Waiting for other players to pick")
+	}()
+
+	if m == modeAuto {
+		name := whiteList[rand.Intn(len(whiteList))]
+		fmt.Printf("Your pick is %s\n", name)
+
+		return name
+	}
+
+	set := map[string]struct{}{}
+	for _, username := range whiteList {
+		set[username] = struct{}{}
+	}
+
+	for {
+		name := c.input()
+		if _, ok := set[name]; !ok {
+			fmt.Println("invalid username, try again")
+			continue
+		}
+
+		fmt.Printf("Your pick is %s\n", name)
+		return name
+	}
+}
+
+func (c *CLI) awaitRoundStart() (*proto.RoundStartNotification, error) {
+	msg, err := c.notificationStream.Recv()
+	if err != nil {
+		return nil, err
+	}
+
+	switch msg.Notification.(type) {
+	case *proto.Notifications_RoundStart:
+		rs := msg.GetRoundStart()
+		return rs, nil
+	case *proto.Notifications_ResultNotification:
+		result := msg.GetResultNotification()
+		c.handleResult(result)
+
+		return nil, nil
+	default:
+		return nil, fmt.Errorf("unexpected notification")
+	}
+}
+
+func (c *CLI) awaitNightTime() (*proto.NightTimeNotification, error) {
+	msg, err := c.notificationStream.Recv()
+	if err != nil {
+		return nil, err
+	}
+
+	switch msg.Notification.(type) {
+	case *proto.Notifications_NightTime:
+		nt := msg.GetNightTime()
+		return nt, nil
+	case *proto.Notifications_ResultNotification:
+		result := msg.GetResultNotification()
+		c.handleResult(result)
+
+		return nil, nil
+	default:
+		return nil, fmt.Errorf("unexpected notification")
+	}
+}
+
+func (c *CLI) handleResult(result *proto.ResultNotification) {
+	fmt.Printf("game finished, winner role is %s\n", roleName(result.Winner))
+	os.Exit(0)
 }
 
 func (c *CLI) input() string {

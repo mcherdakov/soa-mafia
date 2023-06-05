@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 
@@ -29,6 +30,8 @@ func run() error {
 			sessionManager,
 		),
 	)
+
+	fmt.Println("Starting server")
 
 	return s.Serve(listener)
 }

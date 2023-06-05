@@ -12,6 +12,7 @@ func NewSessionManager() *SessionManager {
 	return &SessionManager{
 		maxSessionID: 0,
 		input:        make(chan []*models.User),
+		sessions:     map[int64]*Session{},
 	}
 }
 
@@ -25,8 +26,9 @@ func (sm *SessionManager) Run() {
 
 		session := NewSession(users, sm.maxSessionID+1)
 		sm.sessions[sessionID] = session
-
 		sm.maxSessionID += 1
+
+		go session.Run()
 	}
 }
 

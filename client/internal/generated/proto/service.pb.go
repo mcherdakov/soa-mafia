@@ -69,16 +69,21 @@ func (Role) EnumDescriptor() ([]byte, []int) {
 	return file_service_proto_rawDescGZIP(), []int{0}
 }
 
-type ConnectQueueIn struct {
+type Commands struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	// Types that are assignable to Command:
+	//	*Commands_PassCommand
+	//	*Commands_VoteCommand
+	//	*Commands_KillCommand
+	//	*Commands_CheckCommand
+	Command isCommands_Command `protobuf_oneof:"command"`
 }
 
-func (x *ConnectQueueIn) Reset() {
-	*x = ConnectQueueIn{}
+func (x *Commands) Reset() {
+	*x = Commands{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_service_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -86,13 +91,13 @@ func (x *ConnectQueueIn) Reset() {
 	}
 }
 
-func (x *ConnectQueueIn) String() string {
+func (x *Commands) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ConnectQueueIn) ProtoMessage() {}
+func (*Commands) ProtoMessage() {}
 
-func (x *ConnectQueueIn) ProtoReflect() protoreflect.Message {
+func (x *Commands) ProtoReflect() protoreflect.Message {
 	mi := &file_service_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -104,28 +109,82 @@ func (x *ConnectQueueIn) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ConnectQueueIn.ProtoReflect.Descriptor instead.
-func (*ConnectQueueIn) Descriptor() ([]byte, []int) {
+// Deprecated: Use Commands.ProtoReflect.Descriptor instead.
+func (*Commands) Descriptor() ([]byte, []int) {
 	return file_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ConnectQueueIn) GetUsername() string {
-	if x != nil {
-		return x.Username
+func (m *Commands) GetCommand() isCommands_Command {
+	if m != nil {
+		return m.Command
 	}
-	return ""
+	return nil
 }
 
-type DisconnectQueueIn struct {
+func (x *Commands) GetPassCommand() *PassCommand {
+	if x, ok := x.GetCommand().(*Commands_PassCommand); ok {
+		return x.PassCommand
+	}
+	return nil
+}
+
+func (x *Commands) GetVoteCommand() *VoteCommand {
+	if x, ok := x.GetCommand().(*Commands_VoteCommand); ok {
+		return x.VoteCommand
+	}
+	return nil
+}
+
+func (x *Commands) GetKillCommand() *KillCommand {
+	if x, ok := x.GetCommand().(*Commands_KillCommand); ok {
+		return x.KillCommand
+	}
+	return nil
+}
+
+func (x *Commands) GetCheckCommand() *CheckCommand {
+	if x, ok := x.GetCommand().(*Commands_CheckCommand); ok {
+		return x.CheckCommand
+	}
+	return nil
+}
+
+type isCommands_Command interface {
+	isCommands_Command()
+}
+
+type Commands_PassCommand struct {
+	PassCommand *PassCommand `protobuf:"bytes,1,opt,name=pass_command,json=passCommand,proto3,oneof"`
+}
+
+type Commands_VoteCommand struct {
+	VoteCommand *VoteCommand `protobuf:"bytes,2,opt,name=vote_command,json=voteCommand,proto3,oneof"`
+}
+
+type Commands_KillCommand struct {
+	KillCommand *KillCommand `protobuf:"bytes,3,opt,name=kill_command,json=killCommand,proto3,oneof"`
+}
+
+type Commands_CheckCommand struct {
+	CheckCommand *CheckCommand `protobuf:"bytes,4,opt,name=check_command,json=checkCommand,proto3,oneof"`
+}
+
+func (*Commands_PassCommand) isCommands_Command() {}
+
+func (*Commands_VoteCommand) isCommands_Command() {}
+
+func (*Commands_KillCommand) isCommands_Command() {}
+
+func (*Commands_CheckCommand) isCommands_Command() {}
+
+type PassCommand struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
 }
 
-func (x *DisconnectQueueIn) Reset() {
-	*x = DisconnectQueueIn{}
+func (x *PassCommand) Reset() {
+	*x = PassCommand{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_service_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -133,13 +192,13 @@ func (x *DisconnectQueueIn) Reset() {
 	}
 }
 
-func (x *DisconnectQueueIn) String() string {
+func (x *PassCommand) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DisconnectQueueIn) ProtoMessage() {}
+func (*PassCommand) ProtoMessage() {}
 
-func (x *DisconnectQueueIn) ProtoReflect() protoreflect.Message {
+func (x *PassCommand) ProtoReflect() protoreflect.Message {
 	mi := &file_service_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -151,28 +210,21 @@ func (x *DisconnectQueueIn) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DisconnectQueueIn.ProtoReflect.Descriptor instead.
-func (*DisconnectQueueIn) Descriptor() ([]byte, []int) {
+// Deprecated: Use PassCommand.ProtoReflect.Descriptor instead.
+func (*PassCommand) Descriptor() ([]byte, []int) {
 	return file_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DisconnectQueueIn) GetUsername() string {
-	if x != nil {
-		return x.Username
-	}
-	return ""
-}
-
-type DisconnectQueueOut struct {
+type VoteCommand struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Ok bool `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
 }
 
-func (x *DisconnectQueueOut) Reset() {
-	*x = DisconnectQueueOut{}
+func (x *VoteCommand) Reset() {
+	*x = VoteCommand{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_service_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -180,13 +232,13 @@ func (x *DisconnectQueueOut) Reset() {
 	}
 }
 
-func (x *DisconnectQueueOut) String() string {
+func (x *VoteCommand) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DisconnectQueueOut) ProtoMessage() {}
+func (*VoteCommand) ProtoMessage() {}
 
-func (x *DisconnectQueueOut) ProtoReflect() protoreflect.Message {
+func (x *VoteCommand) ProtoReflect() protoreflect.Message {
 	mi := &file_service_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -198,16 +250,110 @@ func (x *DisconnectQueueOut) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DisconnectQueueOut.ProtoReflect.Descriptor instead.
-func (*DisconnectQueueOut) Descriptor() ([]byte, []int) {
+// Deprecated: Use VoteCommand.ProtoReflect.Descriptor instead.
+func (*VoteCommand) Descriptor() ([]byte, []int) {
 	return file_service_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *DisconnectQueueOut) GetOk() bool {
+func (x *VoteCommand) GetUsername() string {
 	if x != nil {
-		return x.Ok
+		return x.Username
 	}
-	return false
+	return ""
+}
+
+type KillCommand struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+}
+
+func (x *KillCommand) Reset() {
+	*x = KillCommand{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *KillCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KillCommand) ProtoMessage() {}
+
+func (x *KillCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KillCommand.ProtoReflect.Descriptor instead.
+func (*KillCommand) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *KillCommand) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+type CheckCommand struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+}
+
+func (x *CheckCommand) Reset() {
+	*x = CheckCommand{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CheckCommand) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CheckCommand) ProtoMessage() {}
+
+func (x *CheckCommand) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CheckCommand.ProtoReflect.Descriptor instead.
+func (*CheckCommand) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CheckCommand) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
 }
 
 type Notifications struct {
@@ -219,13 +365,16 @@ type Notifications struct {
 	//	*Notifications_UserConnected
 	//	*Notifications_UserDisconnected
 	//	*Notifications_EnterSession
+	//	*Notifications_RoundStart
+	//	*Notifications_NightTime
+	//	*Notifications_ResultNotification
 	Notification isNotifications_Notification `protobuf_oneof:"notification"`
 }
 
 func (x *Notifications) Reset() {
 	*x = Notifications{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[3]
+		mi := &file_service_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -238,7 +387,7 @@ func (x *Notifications) String() string {
 func (*Notifications) ProtoMessage() {}
 
 func (x *Notifications) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[3]
+	mi := &file_service_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -251,7 +400,7 @@ func (x *Notifications) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Notifications.ProtoReflect.Descriptor instead.
 func (*Notifications) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{3}
+	return file_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (m *Notifications) GetNotification() isNotifications_Notification {
@@ -282,6 +431,27 @@ func (x *Notifications) GetEnterSession() *EnterSessionNotification {
 	return nil
 }
 
+func (x *Notifications) GetRoundStart() *RoundStartNotification {
+	if x, ok := x.GetNotification().(*Notifications_RoundStart); ok {
+		return x.RoundStart
+	}
+	return nil
+}
+
+func (x *Notifications) GetNightTime() *NightTimeNotification {
+	if x, ok := x.GetNotification().(*Notifications_NightTime); ok {
+		return x.NightTime
+	}
+	return nil
+}
+
+func (x *Notifications) GetResultNotification() *ResultNotification {
+	if x, ok := x.GetNotification().(*Notifications_ResultNotification); ok {
+		return x.ResultNotification
+	}
+	return nil
+}
+
 type isNotifications_Notification interface {
 	isNotifications_Notification()
 }
@@ -298,11 +468,29 @@ type Notifications_EnterSession struct {
 	EnterSession *EnterSessionNotification `protobuf:"bytes,3,opt,name=enter_session,json=enterSession,proto3,oneof"`
 }
 
+type Notifications_RoundStart struct {
+	RoundStart *RoundStartNotification `protobuf:"bytes,4,opt,name=round_start,json=roundStart,proto3,oneof"`
+}
+
+type Notifications_NightTime struct {
+	NightTime *NightTimeNotification `protobuf:"bytes,5,opt,name=night_time,json=nightTime,proto3,oneof"`
+}
+
+type Notifications_ResultNotification struct {
+	ResultNotification *ResultNotification `protobuf:"bytes,6,opt,name=result_notification,json=resultNotification,proto3,oneof"`
+}
+
 func (*Notifications_UserConnected) isNotifications_Notification() {}
 
 func (*Notifications_UserDisconnected) isNotifications_Notification() {}
 
 func (*Notifications_EnterSession) isNotifications_Notification() {}
+
+func (*Notifications_RoundStart) isNotifications_Notification() {}
+
+func (*Notifications_NightTime) isNotifications_Notification() {}
+
+func (*Notifications_ResultNotification) isNotifications_Notification() {}
 
 type UserConnectedNotification struct {
 	state         protoimpl.MessageState
@@ -316,7 +504,7 @@ type UserConnectedNotification struct {
 func (x *UserConnectedNotification) Reset() {
 	*x = UserConnectedNotification{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[4]
+		mi := &file_service_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -329,7 +517,7 @@ func (x *UserConnectedNotification) String() string {
 func (*UserConnectedNotification) ProtoMessage() {}
 
 func (x *UserConnectedNotification) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[4]
+	mi := &file_service_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -342,7 +530,7 @@ func (x *UserConnectedNotification) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserConnectedNotification.ProtoReflect.Descriptor instead.
 func (*UserConnectedNotification) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{4}
+	return file_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *UserConnectedNotification) GetUsername() string {
@@ -371,7 +559,7 @@ type UserDisconnectedNotification struct {
 func (x *UserDisconnectedNotification) Reset() {
 	*x = UserDisconnectedNotification{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[5]
+		mi := &file_service_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -384,7 +572,7 @@ func (x *UserDisconnectedNotification) String() string {
 func (*UserDisconnectedNotification) ProtoMessage() {}
 
 func (x *UserDisconnectedNotification) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[5]
+	mi := &file_service_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -397,7 +585,7 @@ func (x *UserDisconnectedNotification) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserDisconnectedNotification.ProtoReflect.Descriptor instead.
 func (*UserDisconnectedNotification) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{5}
+	return file_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *UserDisconnectedNotification) GetUsername() string {
@@ -426,7 +614,7 @@ type EnterSessionNotification struct {
 func (x *EnterSessionNotification) Reset() {
 	*x = EnterSessionNotification{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_service_proto_msgTypes[6]
+		mi := &file_service_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -439,7 +627,7 @@ func (x *EnterSessionNotification) String() string {
 func (*EnterSessionNotification) ProtoMessage() {}
 
 func (x *EnterSessionNotification) ProtoReflect() protoreflect.Message {
-	mi := &file_service_proto_msgTypes[6]
+	mi := &file_service_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -452,7 +640,7 @@ func (x *EnterSessionNotification) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnterSessionNotification.ProtoReflect.Descriptor instead.
 func (*EnterSessionNotification) Descriptor() ([]byte, []int) {
-	return file_service_proto_rawDescGZIP(), []int{6}
+	return file_service_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *EnterSessionNotification) GetSessionId() int64 {
@@ -469,33 +657,484 @@ func (x *EnterSessionNotification) GetRole() Role {
 	return Role_CIVILIAN
 }
 
+type RoundStartNotification struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Day            int64    `protobuf:"varint,1,opt,name=day,proto3" json:"day,omitempty"`
+	KilledUsername *string  `protobuf:"bytes,2,opt,name=killed_username,json=killedUsername,proto3,oneof" json:"killed_username,omitempty"`
+	MafiaUsername  *string  `protobuf:"bytes,3,opt,name=mafia_username,json=mafiaUsername,proto3,oneof" json:"mafia_username,omitempty"`
+	Remaining      []string `protobuf:"bytes,4,rep,name=remaining,proto3" json:"remaining,omitempty"`
+}
+
+func (x *RoundStartNotification) Reset() {
+	*x = RoundStartNotification{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RoundStartNotification) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoundStartNotification) ProtoMessage() {}
+
+func (x *RoundStartNotification) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoundStartNotification.ProtoReflect.Descriptor instead.
+func (*RoundStartNotification) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *RoundStartNotification) GetDay() int64 {
+	if x != nil {
+		return x.Day
+	}
+	return 0
+}
+
+func (x *RoundStartNotification) GetKilledUsername() string {
+	if x != nil && x.KilledUsername != nil {
+		return *x.KilledUsername
+	}
+	return ""
+}
+
+func (x *RoundStartNotification) GetMafiaUsername() string {
+	if x != nil && x.MafiaUsername != nil {
+		return *x.MafiaUsername
+	}
+	return ""
+}
+
+func (x *RoundStartNotification) GetRemaining() []string {
+	if x != nil {
+		return x.Remaining
+	}
+	return nil
+}
+
+type NightTimeNotification struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	VotedOut  *string  `protobuf:"bytes,1,opt,name=voted_out,json=votedOut,proto3,oneof" json:"voted_out,omitempty"`
+	Remaining []string `protobuf:"bytes,2,rep,name=remaining,proto3" json:"remaining,omitempty"`
+}
+
+func (x *NightTimeNotification) Reset() {
+	*x = NightTimeNotification{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NightTimeNotification) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NightTimeNotification) ProtoMessage() {}
+
+func (x *NightTimeNotification) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NightTimeNotification.ProtoReflect.Descriptor instead.
+func (*NightTimeNotification) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *NightTimeNotification) GetVotedOut() string {
+	if x != nil && x.VotedOut != nil {
+		return *x.VotedOut
+	}
+	return ""
+}
+
+func (x *NightTimeNotification) GetRemaining() []string {
+	if x != nil {
+		return x.Remaining
+	}
+	return nil
+}
+
+type ResultNotification struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Winner Role `protobuf:"varint,1,opt,name=winner,proto3,enum=Role" json:"winner,omitempty"`
+}
+
+func (x *ResultNotification) Reset() {
+	*x = ResultNotification{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ResultNotification) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResultNotification) ProtoMessage() {}
+
+func (x *ResultNotification) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ResultNotification.ProtoReflect.Descriptor instead.
+func (*ResultNotification) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *ResultNotification) GetWinner() Role {
+	if x != nil {
+		return x.Winner
+	}
+	return Role_CIVILIAN
+}
+
+type ConnectQueueIn struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+}
+
+func (x *ConnectQueueIn) Reset() {
+	*x = ConnectQueueIn{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ConnectQueueIn) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConnectQueueIn) ProtoMessage() {}
+
+func (x *ConnectQueueIn) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConnectQueueIn.ProtoReflect.Descriptor instead.
+func (*ConnectQueueIn) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ConnectQueueIn) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+type DisconnectQueueIn struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+}
+
+func (x *DisconnectQueueIn) Reset() {
+	*x = DisconnectQueueIn{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DisconnectQueueIn) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DisconnectQueueIn) ProtoMessage() {}
+
+func (x *DisconnectQueueIn) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DisconnectQueueIn.ProtoReflect.Descriptor instead.
+func (*DisconnectQueueIn) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *DisconnectQueueIn) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+type DisconnectQueueOut struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ok bool `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
+}
+
+func (x *DisconnectQueueOut) Reset() {
+	*x = DisconnectQueueOut{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DisconnectQueueOut) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DisconnectQueueOut) ProtoMessage() {}
+
+func (x *DisconnectQueueOut) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DisconnectQueueOut.ProtoReflect.Descriptor instead.
+func (*DisconnectQueueOut) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *DisconnectQueueOut) GetOk() bool {
+	if x != nil {
+		return x.Ok
+	}
+	return false
+}
+
+type SendCommandIn struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Command   *Commands `protobuf:"bytes,1,opt,name=command,proto3" json:"command,omitempty"`
+	SessionId int64     `protobuf:"varint,2,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	Username  string    `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+}
+
+func (x *SendCommandIn) Reset() {
+	*x = SendCommandIn{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SendCommandIn) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendCommandIn) ProtoMessage() {}
+
+func (x *SendCommandIn) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendCommandIn.ProtoReflect.Descriptor instead.
+func (*SendCommandIn) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *SendCommandIn) GetCommand() *Commands {
+	if x != nil {
+		return x.Command
+	}
+	return nil
+}
+
+func (x *SendCommandIn) GetSessionId() int64 {
+	if x != nil {
+		return x.SessionId
+	}
+	return 0
+}
+
+func (x *SendCommandIn) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+type SendCommandOut struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ok bool `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
+}
+
+func (x *SendCommandOut) Reset() {
+	*x = SendCommandOut{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SendCommandOut) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendCommandOut) ProtoMessage() {}
+
+func (x *SendCommandOut) ProtoReflect() protoreflect.Message {
+	mi := &file_service_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendCommandOut.ProtoReflect.Descriptor instead.
+func (*SendCommandOut) Descriptor() ([]byte, []int) {
+	return file_service_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *SendCommandOut) GetOk() bool {
+	if x != nil {
+		return x.Ok
+	}
+	return false
+}
+
 var File_service_proto protoreflect.FileDescriptor
 
 var file_service_proto_rawDesc = []byte{
 	0x0a, 0x0d, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22,
-	0x2c, 0x0a, 0x0e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65, 0x75, 0x65, 0x49,
-	0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x2f, 0x0a,
-	0x11, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65, 0x75, 0x65,
-	0x49, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x24,
-	0x0a, 0x12, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65, 0x75,
-	0x65, 0x4f, 0x75, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08,
-	0x52, 0x02, 0x6f, 0x6b, 0x22, 0xf4, 0x01, 0x0a, 0x0d, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x43, 0x0a, 0x0e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63,
-	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
-	0x2e, 0x55, 0x73, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x4e, 0x6f,
-	0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0d, 0x75, 0x73,
-	0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12, 0x4c, 0x0a, 0x11, 0x75,
-	0x73, 0x65, 0x72, 0x5f, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44, 0x69, 0x73,
-	0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x10, 0x75, 0x73, 0x65, 0x72, 0x44, 0x69, 0x73,
-	0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12, 0x40, 0x0a, 0x0d, 0x65, 0x6e, 0x74,
-	0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x19, 0x2e, 0x45, 0x6e, 0x74, 0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x4e,
-	0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0c, 0x65,
-	0x6e, 0x74, 0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x42, 0x0e, 0x0a, 0x0c, 0x6e,
+	0xe4, 0x01, 0x0a, 0x08, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x12, 0x31, 0x0a, 0x0c,
+	0x70, 0x61, 0x73, 0x73, 0x5f, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x50, 0x61, 0x73, 0x73, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64,
+	0x48, 0x00, 0x52, 0x0b, 0x70, 0x61, 0x73, 0x73, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12,
+	0x31, 0x0a, 0x0c, 0x76, 0x6f, 0x74, 0x65, 0x5f, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x56, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x6d,
+	0x61, 0x6e, 0x64, 0x48, 0x00, 0x52, 0x0b, 0x76, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6d, 0x6d, 0x61,
+	0x6e, 0x64, 0x12, 0x31, 0x0a, 0x0c, 0x6b, 0x69, 0x6c, 0x6c, 0x5f, 0x63, 0x6f, 0x6d, 0x6d, 0x61,
+	0x6e, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x4b, 0x69, 0x6c, 0x6c, 0x43,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x48, 0x00, 0x52, 0x0b, 0x6b, 0x69, 0x6c, 0x6c, 0x43, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x34, 0x0a, 0x0d, 0x63, 0x68, 0x65, 0x63, 0x6b, 0x5f, 0x63,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x43,
+	0x68, 0x65, 0x63, 0x6b, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x48, 0x00, 0x52, 0x0c, 0x63,
+	0x68, 0x65, 0x63, 0x6b, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x42, 0x09, 0x0a, 0x07, 0x63,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x22, 0x0d, 0x0a, 0x0b, 0x50, 0x61, 0x73, 0x73, 0x43, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x22, 0x29, 0x0a, 0x0b, 0x56, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6d,
+	0x6d, 0x61, 0x6e, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
+	0x22, 0x29, 0x0a, 0x0b, 0x4b, 0x69, 0x6c, 0x6c, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12,
+	0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x2a, 0x0a, 0x0c, 0x43,
+	0x68, 0x65, 0x63, 0x6b, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x75,
+	0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75,
+	0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0xb1, 0x03, 0x0a, 0x0d, 0x4e, 0x6f, 0x74, 0x69,
+	0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x43, 0x0a, 0x0e, 0x75, 0x73, 0x65,
+	0x72, 0x5f, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x1a, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65,
+	0x64, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52,
+	0x0d, 0x75, 0x73, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12, 0x4c,
+	0x0a, 0x11, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
+	0x74, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x55, 0x73, 0x65, 0x72,
+	0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x4e, 0x6f, 0x74, 0x69,
+	0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x10, 0x75, 0x73, 0x65, 0x72,
+	0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12, 0x40, 0x0a, 0x0d,
+	0x65, 0x6e, 0x74, 0x65, 0x72, 0x5f, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x45, 0x6e, 0x74, 0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69,
+	0x6f, 0x6e, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00,
+	0x52, 0x0c, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x53, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x3a,
+	0x0a, 0x0b, 0x72, 0x6f, 0x75, 0x6e, 0x64, 0x5f, 0x73, 0x74, 0x61, 0x72, 0x74, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x52, 0x6f, 0x75, 0x6e, 0x64, 0x53, 0x74, 0x61, 0x72, 0x74,
+	0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x0a,
+	0x72, 0x6f, 0x75, 0x6e, 0x64, 0x53, 0x74, 0x61, 0x72, 0x74, 0x12, 0x37, 0x0a, 0x0a, 0x6e, 0x69,
+	0x67, 0x68, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16,
+	0x2e, 0x4e, 0x69, 0x67, 0x68, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69,
+	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x09, 0x6e, 0x69, 0x67, 0x68, 0x74, 0x54,
+	0x69, 0x6d, 0x65, 0x12, 0x46, 0x0a, 0x13, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x5f, 0x6e, 0x6f,
+	0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x13, 0x2e, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x00, 0x52, 0x12, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x4e,
+	0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x0e, 0x0a, 0x0c, 0x6e,
 	0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x51, 0x0a, 0x19, 0x55,
 	0x73, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x4e, 0x6f, 0x74, 0x69,
 	0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72,
@@ -512,19 +1151,62 @@ var file_service_proto_rawDesc = []byte{
 	0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12,
 	0x19, 0x0a, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x05, 0x2e,
-	0x52, 0x6f, 0x6c, 0x65, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x2a, 0x2e, 0x0a, 0x04, 0x52, 0x6f,
+	0x52, 0x6f, 0x6c, 0x65, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x22, 0xc9, 0x01, 0x0a, 0x16, 0x52,
+	0x6f, 0x75, 0x6e, 0x64, 0x53, 0x74, 0x61, 0x72, 0x74, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x61, 0x79, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x03, 0x64, 0x61, 0x79, 0x12, 0x2c, 0x0a, 0x0f, 0x6b, 0x69, 0x6c, 0x6c, 0x65,
+	0x64, 0x5f, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x48, 0x00, 0x52, 0x0e, 0x6b, 0x69, 0x6c, 0x6c, 0x65, 0x64, 0x55, 0x73, 0x65, 0x72, 0x6e, 0x61,
+	0x6d, 0x65, 0x88, 0x01, 0x01, 0x12, 0x2a, 0x0a, 0x0e, 0x6d, 0x61, 0x66, 0x69, 0x61, 0x5f, 0x75,
+	0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x48, 0x01, 0x52,
+	0x0d, 0x6d, 0x61, 0x66, 0x69, 0x61, 0x55, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x88, 0x01,
+	0x01, 0x12, 0x1c, 0x0a, 0x09, 0x72, 0x65, 0x6d, 0x61, 0x69, 0x6e, 0x69, 0x6e, 0x67, 0x18, 0x04,
+	0x20, 0x03, 0x28, 0x09, 0x52, 0x09, 0x72, 0x65, 0x6d, 0x61, 0x69, 0x6e, 0x69, 0x6e, 0x67, 0x42,
+	0x12, 0x0a, 0x10, 0x5f, 0x6b, 0x69, 0x6c, 0x6c, 0x65, 0x64, 0x5f, 0x75, 0x73, 0x65, 0x72, 0x6e,
+	0x61, 0x6d, 0x65, 0x42, 0x11, 0x0a, 0x0f, 0x5f, 0x6d, 0x61, 0x66, 0x69, 0x61, 0x5f, 0x75, 0x73,
+	0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x65, 0x0a, 0x15, 0x4e, 0x69, 0x67, 0x68, 0x74, 0x54,
+	0x69, 0x6d, 0x65, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
+	0x20, 0x0a, 0x09, 0x76, 0x6f, 0x74, 0x65, 0x64, 0x5f, 0x6f, 0x75, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x48, 0x00, 0x52, 0x08, 0x76, 0x6f, 0x74, 0x65, 0x64, 0x4f, 0x75, 0x74, 0x88, 0x01,
+	0x01, 0x12, 0x1c, 0x0a, 0x09, 0x72, 0x65, 0x6d, 0x61, 0x69, 0x6e, 0x69, 0x6e, 0x67, 0x18, 0x02,
+	0x20, 0x03, 0x28, 0x09, 0x52, 0x09, 0x72, 0x65, 0x6d, 0x61, 0x69, 0x6e, 0x69, 0x6e, 0x67, 0x42,
+	0x0c, 0x0a, 0x0a, 0x5f, 0x76, 0x6f, 0x74, 0x65, 0x64, 0x5f, 0x6f, 0x75, 0x74, 0x22, 0x33, 0x0a,
+	0x12, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x12, 0x1d, 0x0a, 0x06, 0x77, 0x69, 0x6e, 0x6e, 0x65, 0x72, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x05, 0x2e, 0x52, 0x6f, 0x6c, 0x65, 0x52, 0x06, 0x77, 0x69, 0x6e, 0x6e,
+	0x65, 0x72, 0x22, 0x2c, 0x0a, 0x0e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65,
+	0x75, 0x65, 0x49, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65,
+	0x22, 0x2f, 0x0a, 0x11, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75,
+	0x65, 0x75, 0x65, 0x49, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d,
+	0x65, 0x22, 0x24, 0x0a, 0x12, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51,
+	0x75, 0x65, 0x75, 0x65, 0x4f, 0x75, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x6b, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x02, 0x6f, 0x6b, 0x22, 0x6f, 0x0a, 0x0d, 0x53, 0x65, 0x6e, 0x64, 0x43,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x49, 0x6e, 0x12, 0x23, 0x0a, 0x07, 0x63, 0x6f, 0x6d, 0x6d,
+	0x61, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x09, 0x2e, 0x43, 0x6f, 0x6d, 0x6d,
+	0x61, 0x6e, 0x64, 0x73, 0x52, 0x07, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x1d, 0x0a,
+	0x0a, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x09, 0x73, 0x65, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08,
+	0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
+	0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x20, 0x0a, 0x0e, 0x53, 0x65, 0x6e, 0x64,
+	0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x4f, 0x75, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x6f, 0x6b,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x02, 0x6f, 0x6b, 0x2a, 0x2e, 0x0a, 0x04, 0x52, 0x6f,
 	0x6c, 0x65, 0x12, 0x0c, 0x0a, 0x08, 0x43, 0x49, 0x56, 0x49, 0x4c, 0x49, 0x41, 0x4e, 0x10, 0x00,
 	0x12, 0x09, 0x0a, 0x05, 0x4d, 0x41, 0x46, 0x49, 0x41, 0x10, 0x01, 0x12, 0x0d, 0x0a, 0x09, 0x44,
-	0x45, 0x54, 0x45, 0x43, 0x49, 0x54, 0x56, 0x45, 0x10, 0x02, 0x32, 0x79, 0x0a, 0x08, 0x53, 0x4f,
-	0x41, 0x4d, 0x61, 0x66, 0x69, 0x61, 0x12, 0x31, 0x0a, 0x0c, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
-	0x74, 0x51, 0x75, 0x65, 0x75, 0x65, 0x12, 0x0f, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
-	0x51, 0x75, 0x65, 0x75, 0x65, 0x49, 0x6e, 0x1a, 0x0e, 0x2e, 0x4e, 0x6f, 0x74, 0x69, 0x66, 0x69,
-	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x30, 0x01, 0x12, 0x3a, 0x0a, 0x0f, 0x44, 0x69, 0x73,
-	0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65, 0x75, 0x65, 0x12, 0x12, 0x2e, 0x44,
-	0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65, 0x75, 0x65, 0x49, 0x6e,
-	0x1a, 0x13, 0x2e, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65,
-	0x75, 0x65, 0x4f, 0x75, 0x74, 0x42, 0x08, 0x5a, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x45, 0x54, 0x45, 0x43, 0x49, 0x54, 0x56, 0x45, 0x10, 0x02, 0x32, 0xa9, 0x01, 0x0a, 0x08, 0x53,
+	0x4f, 0x41, 0x4d, 0x61, 0x66, 0x69, 0x61, 0x12, 0x31, 0x0a, 0x0c, 0x43, 0x6f, 0x6e, 0x6e, 0x65,
+	0x63, 0x74, 0x51, 0x75, 0x65, 0x75, 0x65, 0x12, 0x0f, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
+	0x74, 0x51, 0x75, 0x65, 0x75, 0x65, 0x49, 0x6e, 0x1a, 0x0e, 0x2e, 0x4e, 0x6f, 0x74, 0x69, 0x66,
+	0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x30, 0x01, 0x12, 0x3a, 0x0a, 0x0f, 0x44, 0x69,
+	0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65, 0x75, 0x65, 0x12, 0x12, 0x2e,
+	0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75, 0x65, 0x75, 0x65, 0x49,
+	0x6e, 0x1a, 0x13, 0x2e, 0x44, 0x69, 0x73, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x51, 0x75,
+	0x65, 0x75, 0x65, 0x4f, 0x75, 0x74, 0x12, 0x2e, 0x0a, 0x0b, 0x53, 0x65, 0x6e, 0x64, 0x43, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x12, 0x0e, 0x2e, 0x53, 0x65, 0x6e, 0x64, 0x43, 0x6f, 0x6d, 0x6d,
+	0x61, 0x6e, 0x64, 0x49, 0x6e, 0x1a, 0x0f, 0x2e, 0x53, 0x65, 0x6e, 0x64, 0x43, 0x6f, 0x6d, 0x6d,
+	0x61, 0x6e, 0x64, 0x4f, 0x75, 0x74, 0x42, 0x08, 0x5a, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -540,31 +1222,52 @@ func file_service_proto_rawDescGZIP() []byte {
 }
 
 var file_service_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_service_proto_goTypes = []interface{}{
 	(Role)(0),                            // 0: Role
-	(*ConnectQueueIn)(nil),               // 1: ConnectQueueIn
-	(*DisconnectQueueIn)(nil),            // 2: DisconnectQueueIn
-	(*DisconnectQueueOut)(nil),           // 3: DisconnectQueueOut
-	(*Notifications)(nil),                // 4: Notifications
-	(*UserConnectedNotification)(nil),    // 5: UserConnectedNotification
-	(*UserDisconnectedNotification)(nil), // 6: UserDisconnectedNotification
-	(*EnterSessionNotification)(nil),     // 7: EnterSessionNotification
+	(*Commands)(nil),                     // 1: Commands
+	(*PassCommand)(nil),                  // 2: PassCommand
+	(*VoteCommand)(nil),                  // 3: VoteCommand
+	(*KillCommand)(nil),                  // 4: KillCommand
+	(*CheckCommand)(nil),                 // 5: CheckCommand
+	(*Notifications)(nil),                // 6: Notifications
+	(*UserConnectedNotification)(nil),    // 7: UserConnectedNotification
+	(*UserDisconnectedNotification)(nil), // 8: UserDisconnectedNotification
+	(*EnterSessionNotification)(nil),     // 9: EnterSessionNotification
+	(*RoundStartNotification)(nil),       // 10: RoundStartNotification
+	(*NightTimeNotification)(nil),        // 11: NightTimeNotification
+	(*ResultNotification)(nil),           // 12: ResultNotification
+	(*ConnectQueueIn)(nil),               // 13: ConnectQueueIn
+	(*DisconnectQueueIn)(nil),            // 14: DisconnectQueueIn
+	(*DisconnectQueueOut)(nil),           // 15: DisconnectQueueOut
+	(*SendCommandIn)(nil),                // 16: SendCommandIn
+	(*SendCommandOut)(nil),               // 17: SendCommandOut
 }
 var file_service_proto_depIdxs = []int32{
-	5, // 0: Notifications.user_connected:type_name -> UserConnectedNotification
-	6, // 1: Notifications.user_disconnected:type_name -> UserDisconnectedNotification
-	7, // 2: Notifications.enter_session:type_name -> EnterSessionNotification
-	0, // 3: EnterSessionNotification.role:type_name -> Role
-	1, // 4: SOAMafia.ConnectQueue:input_type -> ConnectQueueIn
-	2, // 5: SOAMafia.DisconnectQueue:input_type -> DisconnectQueueIn
-	4, // 6: SOAMafia.ConnectQueue:output_type -> Notifications
-	3, // 7: SOAMafia.DisconnectQueue:output_type -> DisconnectQueueOut
-	6, // [6:8] is the sub-list for method output_type
-	4, // [4:6] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2,  // 0: Commands.pass_command:type_name -> PassCommand
+	3,  // 1: Commands.vote_command:type_name -> VoteCommand
+	4,  // 2: Commands.kill_command:type_name -> KillCommand
+	5,  // 3: Commands.check_command:type_name -> CheckCommand
+	7,  // 4: Notifications.user_connected:type_name -> UserConnectedNotification
+	8,  // 5: Notifications.user_disconnected:type_name -> UserDisconnectedNotification
+	9,  // 6: Notifications.enter_session:type_name -> EnterSessionNotification
+	10, // 7: Notifications.round_start:type_name -> RoundStartNotification
+	11, // 8: Notifications.night_time:type_name -> NightTimeNotification
+	12, // 9: Notifications.result_notification:type_name -> ResultNotification
+	0,  // 10: EnterSessionNotification.role:type_name -> Role
+	0,  // 11: ResultNotification.winner:type_name -> Role
+	1,  // 12: SendCommandIn.command:type_name -> Commands
+	13, // 13: SOAMafia.ConnectQueue:input_type -> ConnectQueueIn
+	14, // 14: SOAMafia.DisconnectQueue:input_type -> DisconnectQueueIn
+	16, // 15: SOAMafia.SendCommand:input_type -> SendCommandIn
+	6,  // 16: SOAMafia.ConnectQueue:output_type -> Notifications
+	15, // 17: SOAMafia.DisconnectQueue:output_type -> DisconnectQueueOut
+	17, // 18: SOAMafia.SendCommand:output_type -> SendCommandOut
+	16, // [16:19] is the sub-list for method output_type
+	13, // [13:16] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_service_proto_init() }
@@ -574,7 +1277,7 @@ func file_service_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_service_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectQueueIn); i {
+			switch v := v.(*Commands); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -586,7 +1289,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DisconnectQueueIn); i {
+			switch v := v.(*PassCommand); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -598,7 +1301,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DisconnectQueueOut); i {
+			switch v := v.(*VoteCommand); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -610,7 +1313,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Notifications); i {
+			switch v := v.(*KillCommand); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -622,7 +1325,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserConnectedNotification); i {
+			switch v := v.(*CheckCommand); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -634,7 +1337,7 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserDisconnectedNotification); i {
+			switch v := v.(*Notifications); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -646,6 +1349,30 @@ func file_service_proto_init() {
 			}
 		}
 		file_service_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserConnectedNotification); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserDisconnectedNotification); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*EnterSessionNotification); i {
 			case 0:
 				return &v.state
@@ -657,19 +1384,126 @@ func file_service_proto_init() {
 				return nil
 			}
 		}
+		file_service_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RoundStartNotification); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NightTimeNotification); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResultNotification); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ConnectQueueIn); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DisconnectQueueIn); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DisconnectQueueOut); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SendCommandIn); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SendCommandOut); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
-	file_service_proto_msgTypes[3].OneofWrappers = []interface{}{
+	file_service_proto_msgTypes[0].OneofWrappers = []interface{}{
+		(*Commands_PassCommand)(nil),
+		(*Commands_VoteCommand)(nil),
+		(*Commands_KillCommand)(nil),
+		(*Commands_CheckCommand)(nil),
+	}
+	file_service_proto_msgTypes[5].OneofWrappers = []interface{}{
 		(*Notifications_UserConnected)(nil),
 		(*Notifications_UserDisconnected)(nil),
 		(*Notifications_EnterSession)(nil),
+		(*Notifications_RoundStart)(nil),
+		(*Notifications_NightTime)(nil),
+		(*Notifications_ResultNotification)(nil),
 	}
+	file_service_proto_msgTypes[9].OneofWrappers = []interface{}{}
+	file_service_proto_msgTypes[10].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_service_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   7,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
