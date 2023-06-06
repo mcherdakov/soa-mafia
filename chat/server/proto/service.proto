@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = "proto/";
+
+service SOAChat {
+    rpc Connect(ConnectIn) returns (ConnectOut);
+    rpc SendMessage(SendMessageIn) returns (SendMessageOut);
+}
+
+message ConnectIn {
+    int64 session_id = 1;
+}
+
+message ConnectOut {
+    string topic = 1;
+}
+
+message SendMessageIn {
+    int64 session_id = 1;
+    string username = 2;
+    string text = 3;
+}
+
+message SendMessageOut {}
