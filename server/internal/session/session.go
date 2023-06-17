@@ -163,7 +163,7 @@ func (s *Session) checkGameEnd() bool {
 	civilianCount := 0
 
 	for username := range s.alive {
-		if s.roles[username] == proto.Role_CIVILIAN {
+		if s.roles[username] == proto.Role_CIVILIAN || s.roles[username] == proto.Role_DETECITVE {
 			civilianCount++
 		}
 
@@ -174,7 +174,7 @@ func (s *Session) checkGameEnd() bool {
 
 	var winRole *proto.Role
 
-	if mafiaCount == civilianCount {
+	if mafiaCount >= civilianCount {
 		winRole = ptr(proto.Role_MAFIA)
 	}
 
